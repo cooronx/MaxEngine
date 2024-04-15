@@ -21,25 +21,23 @@ HWND ghMainWnd = nullptr;
  */
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam,
                          LPARAM lParam) {
-   
-    switch (message)
-    {
+  switch (message) {
     case WM_LBUTTONDOWN:
-        MessageBox(nullptr, "Hello World!", "Hello", MB_OK);
-        return 0;
+      MessageBox(nullptr, "Hello World!", "Hello", MB_OK);
+      return 0;
     case WM_KEYDOWN:
-        if (wParam == VK_ESCAPE) {
-            DestroyWindow(hwnd);
-        }
-        return 0;
+      if (wParam == VK_ESCAPE) {
+        DestroyWindow(hwnd);
+      }
+      return 0;
     case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
+      PostQuitMessage(0);
+      return 0;
     default:
-        break;
-    }
-    return DefWindowProc(hwnd, message, wParam, lParam);
- }
+      break;
+  }
+  return DefWindowProc(hwnd, message, wParam, lParam);
+}
 bool InitWindowsApp(HINSTANCE histance, int show) {
   WNDCLASS wc;
   wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -80,6 +78,6 @@ int Run() {
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             int nShowCmd) {
-    if (!InitWindowsApp(hInstance, nShowCmd)) return -1;
-    return Run();
+  if (!InitWindowsApp(hInstance, nShowCmd)) return -1;
+  return Run();
 }

@@ -1,94 +1,93 @@
-#ifndef D3DAPP_H 
+#ifndef D3DAPP_H
 #define D3DAPP_H
-
 
 #ifndef EXPORTTING
 #define DECLSPEC __declspec(dllimport)
 #else
 #define DECLSPEC __declspec(dllexport)
-#endif // EXPORTTING
+#endif  // EXPORTTING
 
 #include <d3d12.h>
 #include <d3dx12.h>
 #include <wrl.h>
-#include <iostream>
 
-#include "D3D12Util.h"
-#include "minwindef.h"
 #include "dxgi.h"
 #include "dxgi1_4.h"
+#include "minwindef.h"
 
 class D3DApp {
-private:
-	/// ¹¤³§¶ÔÏó
-	Microsoft::WRL::ComPtr <IDXGIFactory4> dxgi_factory_;
-	/// ½»»»Á´¶ÔÏó
-	Microsoft::WRL::ComPtr <IDXGISwapChain> swap_chain_;
-	/// Ó²¼ş¶ÔÏó
-	Microsoft::WRL::ComPtr <ID3D12Device> d3d_device_;
-	/// CPUºÍGPUÖ®¼äµÄÆÁÕÏ¶ÔÏó
-	Microsoft::WRL::ComPtr <ID3D12Fence> fence_;
-	/// ÃüÁî¶ÓÁĞ
-	Microsoft::WRL::ComPtr <ID3D12CommandQueue> command_queue_;
-	/// ÃüÁîÁĞ±í
-	Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> direct_list_;
-	/// ÃüÁî·ÖÅäÆ÷
-	Microsoft::WRL::ComPtr <ID3D12CommandAllocator> direct_allocator_;
-	/// rtv¶Ñ
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtv_heap_;
-	/// dsv¶Ñ
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsv_heap_;
-	/// ÃèÊö·ûµÄ´óĞ¡
-	/// RenderTargetView Ö»Ğ´µÄäÖÈ¾¶ÔÏó
-	UINT rtv_size_{};
-	/// DepthStencilView Ö»Ğ´µÄÉî¶È»º³å¶ÔÏó
-	UINT dsv_size_{};
-	/// UnorderedAccessView ConstantBufferView ShaderResourceView ÕâÈı¸ö´óĞ¡ÊÇÒ»ÖÂµÄ
-	UINT cbv_srv_uav_size_{};
-	/// ¿ØÖÆ¿¹¾â³İ
-	bool MSAA4x_state_ = false;
-private:
-	/**
-	 * ³õÊ¼»¯D3D12.
-	 * 
-	 * \return ÊÇ·ñ³õÊ¼»¯³É¹¦
-	 */
-	bool InitializeD3D();
-	/**
-	 * @brief ´´½¨ÃüÁî¶ÓÁĞ£¬ÃüÁîÁĞ±íºÍÃüÁî·ÖÅäÆ÷.
-	 */
-	void CreateCommandObjects();
-	/**
-	 * @brief ´´½¨½»»»Á´.
-	 * 
-	 */
-	void CreateSwapChain();
-	/**
-	 * @brief ´´½¨ÃèÊö·û¶Ñ.
-	 * 
-	 */
-	void CreateDescriptorHeaps();
-	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferDesc()const;
-	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilDesc()const;
-protected:
-	/// Ó¦ÓÃ³ÌĞòµÄÊµÀı¾ä±ú
-	HINSTANCE instance_ = nullptr;
-	/// Ö÷´°¿ÚµÄÊµÀı¾ä±ú
-	HWND handle_mainWnd_ = nullptr;
-	/// Ê¹ÓÃ¼¸¸ö»º³åÇø
-	static const int swap_chain_buffer_cnt_ = 2;
-	/// µ±Ç°ÊÇÄÄ¸ö»º³åÇø£¨ÒÔ±ãÓÚÎÒÃÇÖªµÀÏÖÔÚ¸Ã»æÖÆÄÄÒ»¸ö£©
-	int current_back_buffer_idx_ = 0;
-	UINT client_width_ = 800;
-	UINT client_height_ = 600;
-	/// ºóÌ¨»º³åÇøµÄÏÔÊ¾¸ñÊ½
-	DXGI_FORMAT back_buffer_format_ = DXGI_FORMAT_R8G8B8A8_UNORM;
-public:
-	D3DApp(HINSTANCE);
-	bool initialize();
-	~D3DApp();
+ private:
+  /// å·¥å‚å¯¹è±¡
+  Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi_factory_;
+  /// äº¤æ¢é“¾å¯¹è±¡
+  Microsoft::WRL::ComPtr<IDXGISwapChain> swap_chain_;
+  /// ç¡¬ä»¶å¯¹è±¡
+  Microsoft::WRL::ComPtr<ID3D12Device> d3d_device_;
+  /// CPUå’ŒGPUä¹‹é—´çš„å±éšœå¯¹è±¡
+  Microsoft::WRL::ComPtr<ID3D12Fence> fence_;
+  /// å‘½ä»¤é˜Ÿåˆ—
+  Microsoft::WRL::ComPtr<ID3D12CommandQueue> command_queue_;
+  /// å‘½ä»¤åˆ—è¡¨
+  Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> direct_list_;
+  /// å‘½ä»¤åˆ†é…å™¨
+  Microsoft::WRL::ComPtr<ID3D12CommandAllocator> direct_allocator_;
+  /// rtvå †
+  Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtv_heap_;
+  /// dsvå †
+  Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsv_heap_;
+  /// æè¿°ç¬¦çš„å¤§å°
+  /// RenderTargetView åªå†™çš„æ¸²æŸ“å¯¹è±¡
+  UINT rtv_size_{};
+  /// DepthStencilView åªå†™çš„æ·±åº¦ç¼“å†²å¯¹è±¡
+  UINT dsv_size_{};
+  /// UnorderedAccessView ConstantBufferView ShaderResourceView
+  /// è¿™ä¸‰ä¸ªå¤§å°æ˜¯ä¸€è‡´çš„
+  UINT cbv_srv_uav_size_{};
+  /// æ§åˆ¶æŠ—é”¯é½¿
+  bool MSAA4x_state_ = false;
+
+ private:
+  /**
+   * åˆå§‹åŒ–D3D12.
+   *
+   * \return æ˜¯å¦åˆå§‹åŒ–æˆåŠŸ
+   */
+  bool InitializeD3D();
+  /**
+   * @brief åˆ›å»ºå‘½ä»¤é˜Ÿåˆ—ï¼Œå‘½ä»¤åˆ—è¡¨å’Œå‘½ä»¤åˆ†é…å™¨.
+   */
+  void CreateCommandObjects();
+  /**
+   * @brief åˆ›å»ºäº¤æ¢é“¾.
+   *
+   */
+  void CreateSwapChain();
+  /**
+   * @brief åˆ›å»ºæè¿°ç¬¦å †.
+   *
+   */
+  void CreateDescriptorHeaps();
+  D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferDesc() const;
+  D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilDesc() const;
+
+ protected:
+  /// åº”ç”¨ç¨‹åºçš„å®ä¾‹å¥æŸ„
+  HINSTANCE instance_ = nullptr;
+  /// ä¸»çª—å£çš„å®ä¾‹å¥æŸ„
+  HWND handle_mainWnd_ = nullptr;
+  /// ä½¿ç”¨å‡ ä¸ªç¼“å†²åŒº
+  static const int swap_chain_buffer_cnt_ = 2;
+  /// å½“å‰æ˜¯å“ªä¸ªç¼“å†²åŒºï¼ˆä»¥ä¾¿äºæˆ‘ä»¬çŸ¥é“ç°åœ¨è¯¥ç»˜åˆ¶å“ªä¸€ä¸ªï¼‰
+  int current_back_buffer_idx_ = 0;
+  UINT client_width_ = 800;
+  UINT client_height_ = 600;
+  /// åå°ç¼“å†²åŒºçš„æ˜¾ç¤ºæ ¼å¼
+  DXGI_FORMAT back_buffer_format_ = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+ public:
+  D3DApp(HINSTANCE);
+  bool initialize();
+  ~D3DApp();
 };
-
-
 
 #endif

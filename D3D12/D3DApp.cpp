@@ -1,5 +1,9 @@
 #include "D3DApp.h"
 
+#include <iostream>
+
+#include "D3D12Util.h"
+
 using Microsoft::WRL::ComPtr;
 using namespace Util;
 
@@ -13,17 +17,17 @@ bool D3DApp::initialize() {
 D3DApp::~D3DApp() {}
 
 void D3DApp::CreateCommandObjects() {
-  /// ´´½¨ÃüÁî¶ÓÁĞ
+  /// åˆ›å»ºå‘½ä»¤é˜Ÿåˆ—
   D3D12_COMMAND_QUEUE_DESC queueDesc{};
-  /// Ê¹ÓÃGPUÖ±½Ó¿ÉÒÔÖ´ĞĞµÄÃüÁî£¬ÓëÖ®Ïà¶ÔµÄÊÇÒ»×é´ò°üµÄ»æÖÆÃüÁî
+  /// ä½¿ç”¨GPUç›´æ¥å¯ä»¥æ‰§è¡Œçš„å‘½ä»¤ï¼Œä¸ä¹‹ç›¸å¯¹çš„æ˜¯ä¸€ç»„æ‰“åŒ…çš„ç»˜åˆ¶å‘½ä»¤
   queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
   queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
   ThrowIfFailed(d3d_device_->CreateCommandQueue(&queueDesc,
                                                 IID_PPV_ARGS(&command_queue_)));
-  /// ´´½¨ÃüÁî·ÖÅäÆ÷
+  /// åˆ›å»ºå‘½ä»¤åˆ†é…å™¨
   ThrowIfFailed(d3d_device_->CreateCommandAllocator(
       D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&direct_allocator_)));
-  /// ´´½¨ÃüÁîÁĞ±í
+  /// åˆ›å»ºå‘½ä»¤åˆ—è¡¨
   ThrowIfFailed(d3d_device_->CreateCommandList(
       0, D3D12_COMMAND_LIST_TYPE_DIRECT, direct_allocator_.Get(), nullptr,
       IID_PPV_ARGS(&direct_list_)));
@@ -32,15 +36,15 @@ void D3DApp::CreateCommandObjects() {
 }
 
 void D3DApp::CreateSwapChain() {
-  // ÒòÎªÎÒÃÇ¿ÉÄÜ¶à´Îµ÷ÓÃÕâ¸ö·½·¨£¨ĞŞ¸Äswap
-  // chain£©£¬ËùÒÔÎÒÃÇÒªÏÈ°ÑÖ®Ç°µÄ½»»»Á´ÊÍ·ÅÁË
+  // å› ä¸ºæˆ‘ä»¬å¯èƒ½å¤šæ¬¡è°ƒç”¨è¿™ä¸ªæ–¹æ³•ï¼ˆä¿®æ”¹swap
+  // chainï¼‰ï¼Œæ‰€ä»¥æˆ‘ä»¬è¦å…ˆæŠŠä¹‹å‰çš„äº¤æ¢é“¾é‡Šæ”¾äº†
   swap_chain_.Reset();
 
   DXGI_SWAP_CHAIN_DESC sd;
   sd.BufferDesc.Width = client_width_;
   sd.BufferDesc.Height = client_height_;
   sd.BufferDesc.RefreshRate.Numerator =
-      60;  /// Ë¢ĞÂÂÊ Ö»²»¹ıÊÇÒÔ·ÖÄ¸ºÍ·Ö×ÓµÄĞÎÊ½Õ¹Ê¾µÄ
+      60;  /// åˆ·æ–°ç‡ åªä¸è¿‡æ˜¯ä»¥åˆ†æ¯å’Œåˆ†å­çš„å½¢å¼å±•ç¤ºçš„
   sd.BufferDesc.RefreshRate.Denominator = 1;
   sd.BufferDesc.Format = back_buffer_format_;
   sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -87,7 +91,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilDesc() const {
 }
 
 bool D3DApp::InitializeD3D() {
-  /// Ê×ÏÈ´´½¨Debug²ã
+  /// é¦–å…ˆåˆ›å»ºDebugå±‚
 #if defined(_DEBUG)
   {
     ComPtr<ID3D12Debug> debugController;
@@ -104,10 +108,10 @@ bool D3DApp::InitializeD3D() {
     ThrowIfFailed(D3D12CreateDevice(warpAdapter.Get(), D3D_FEATURE_LEVEL_11_1,
                                     IID_PPV_ARGS(&d3d_device_)));
   }
-  /// ´´½¨ÆÁÕÏ
+  /// åˆ›å»ºå±éšœ
   ThrowIfFailed(d3d_device_->CreateFence(0, D3D12_FENCE_FLAG_NONE,
                                          IID_PPV_ARGS(&fence_)));
-  /// »ñÈ¡ÃèÊö·û´óĞ¡
+  /// è·å–æè¿°ç¬¦å¤§å°
   rtv_size_ = d3d_device_->GetDescriptorHandleIncrementSize(
       D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
   dsv_size_ = d3d_device_->GetDescriptorHandleIncrementSize(
@@ -115,7 +119,7 @@ bool D3DApp::InitializeD3D() {
   cbv_srv_uav_size_ = d3d_device_->GetDescriptorHandleIncrementSize(
       D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-  /// ¼ì²â¶Ô4xMSAAµÄÖ§³Ö
+  /// æ£€æµ‹å¯¹4xMSAAçš„æ”¯æŒ
   D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS levels;
   levels.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
   levels.SampleCount = 4;
@@ -124,13 +128,12 @@ bool D3DApp::InitializeD3D() {
   ThrowIfFailed(d3d_device_->CheckFeatureSupport(
       D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &levels, sizeof(levels)));
   if (levels.NumQualityLevels <= 0) {
-    std::cerr << "Unexpected quality levels in MSAA"
-              << "\n";
+    std::cerr << "Unexpected quality levels in MSAA" << "\n";
   }
 
-  /// ´´½¨ÃüÁî¶ÓÁĞºÍÃüÁîÁĞ±í
+  /// åˆ›å»ºå‘½ä»¤é˜Ÿåˆ—å’Œå‘½ä»¤åˆ—è¡¨
   CreateCommandObjects();
-  /// ´´½¨½»»»Á´
+  /// åˆ›å»ºäº¤æ¢é“¾
   CreateSwapChain();
 
   return false;

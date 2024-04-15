@@ -22,6 +22,5 @@ target_link_libraries(${PROJECT_NAME} d3d12.lib dxgi.lib)
 
 get_filename_component(PARENT_FOLDER_ABSOLUTE ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 
-
-install(FILES ${PROJECT_BINARY_DIR}/Debug/MyD3D12.dll
+install(FILES ${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}.dll
 DESTINATION ${PARENT_FOLDER_ABSOLUTE}/build/test/Debug)
