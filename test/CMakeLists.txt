@@ -7,7 +7,7 @@ project ("test")
 set(CMAKE_WIN32_EXECUTABLE ON)
 
 
-add_executable (test "test.cpp" "test.h")
+add_executable (test "test.cpp" "MyD3D.h")
 
 target_link_libraries(test MyD3D12)
 
