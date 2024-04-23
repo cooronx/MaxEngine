@@ -3,10 +3,7 @@
 #include <winbase.h>
 #include <winuser.h>
 
-#include "D3D12Util.h"
-#include "D3DApp.h"
-
-using namespace Util;
+#include "MyD3D.h"
 
 HWND ghMainWnd = nullptr;
 
@@ -79,5 +76,6 @@ int Run() {
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             int nShowCmd) {
   if (!InitWindowsApp(hInstance, nShowCmd)) return -1;
+  MYD3D app{ghMainWnd};
   return Run();
 }
