@@ -6,7 +6,6 @@
 #include "MyD3D.h"
 
 HWND ghMainWnd = nullptr;
-
 /**
  * @brief 主窗口消息处理函数
  *
@@ -59,14 +58,14 @@ bool InitWindowsApp(HINSTANCE histance, int show) {
   return true;
 }
 
-int Run() {
+int Run(MYD3D &app) {
   MSG msg{};
   while (msg.message != WM_QUIT) {
     if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     } else {
-      /// do nothing
+      app.Draw({});
     }
   }
 
@@ -77,5 +76,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             int nShowCmd) {
   if (!InitWindowsApp(hInstance, nShowCmd)) return -1;
   MYD3D app{ghMainWnd};
-  return Run();
+  app.Initialize();
+  return Run(app);
 }

@@ -14,9 +14,9 @@ using namespace Util;
 
 D3DBasicSetUp::D3DBasicSetUp(HWND wd) : handle_mainWnd_(wd) {}
 
-bool D3DBasicSetUp::initialize() {
+bool D3DBasicSetUp::Initialize() {
   if (!InitializeD3D()) return false;
-
+  OnResize();
   return true;
 }
 
@@ -256,8 +256,10 @@ bool D3DBasicSetUp::InitializeD3D() {
   CreateCommandObjects();
   /// 创建交换链
   CreateSwapChain();
+  /// 创建描述符堆
+  CreateDescriptorHeaps();
 
-  return false;
+  return true;
 }
 
 ID3D12Resource* D3DBasicSetUp::CurrentBackBuffer() const {

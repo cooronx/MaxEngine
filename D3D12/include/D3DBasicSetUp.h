@@ -128,7 +128,7 @@ class D3DBasicSetUp {
    * @return true 是否初始化成功
    * @return false
    */
-  bool initialize();
+  virtual bool Initialize();
   /**
    * @brief 渲染函数
    *

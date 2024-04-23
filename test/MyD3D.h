@@ -12,6 +12,10 @@ using namespace DirectX;
 class MYD3D : public D3DBasicSetUp {
  public:
   MYD3D(HWND wd) : D3DBasicSetUp(wd) {}
+  virtual bool Initialize() override {
+    if (D3DBasicSetUp::Initialize()) return true;
+    return false;
+  }
   void Draw(const GameTimer&) override {
     // Reuse the memory associated with command recording.
     // We can only reset when the associated command lists have finished
