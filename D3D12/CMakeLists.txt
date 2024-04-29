@@ -18,7 +18,7 @@ target_sources( ${PROJECT_NAME}
 )
 
 
-target_link_libraries(${PROJECT_NAME} d3d12.lib dxgi.lib)
+target_link_libraries(${PROJECT_NAME} d3d12.lib dxgi.lib d3dcompiler.lib)
 
 get_filename_component(PARENT_FOLDER_ABSOLUTE ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 

@@ -11,4 +11,6 @@ cmake ^
     -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 cmake --build ./build --config Debug
+
+cmake --install ./build --config Debug
 pause

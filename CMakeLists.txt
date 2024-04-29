@@ -20,5 +20,6 @@ set(D3D12_LIB_HEADERS ${PROJECT_SOURCE_DIR}/D3D12/include)
 
 
 # 包含子项目。
+add_subdirectory(Common)
 add_subdirectory(D3D12)
 add_subdirectory (test)
