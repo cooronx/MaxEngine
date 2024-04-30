@@ -2,14 +2,18 @@
 #define MYD3D_H
 
 #include <DirectXColors.h>
+#include <DirectXMath.h>
 #include <combaseapi.h>
 #include <d3d12.h>
+#include <memory>
+#include <minwinbase.h>
 #include <stdlib.h>
 #include <windef.h>
 
 #include "BasicWindow.h"
 #include "D3D12Util.h"
 #include "D3DBasicSetUp.h"
+#include "UpLoadBuffer.h"
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
@@ -18,12 +22,17 @@
 using namespace Util;
 using namespace DirectX;
 
+struct TransMatrix
+{
+    /// mvp 矩阵
+    XMFLOAT4X4 mvp_mat;
+};
+
 class MYD3D : public D3DBasicSetUp
 {
     public:
-    MYD3D(HWND wd) : D3DBasicSetUp(wd), wd_(wd)
+    MYD3D() : D3DBasicSetUp()
     {
-        MessageBox(0, "construct once.", 0, 0);
     }
     ~MYD3D()
     {
@@ -58,11 +67,24 @@ class MYD3D : public D3DBasicSetUp
         ImGuiIO &io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
-        ImGui_ImplWin32_Init(wd_);
+        ImGui_ImplWin32_Init(handle_mainWnd_);
         ImGui_ImplDX12_Init(d3d_device_.Get(), swap_chain_buffer_cnt_, back_buffer_format_,
                             imgui_srv_heap_.Get(),
                             imgui_srv_heap_->GetCPUDescriptorHandleForHeapStart(),
                             imgui_srv_heap_->GetGPUDescriptorHandleForHeapStart());
+    }
+    void CreateCBVHeaps()
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC desc;
+        desc.NumDescriptors = 1;
+        desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+        desc.NodeMask = 0;
+        ThrowIfFailed(
+            d3d_device_->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbv_heap_.GetAddressOf())));
+    }
+    void CreateConstBuffer()
+    {
     }
     virtual bool Initialize() override
     {
@@ -70,6 +92,8 @@ class MYD3D : public D3DBasicSetUp
             return false;
         createImguiSRVHeap();
         InitImgui();
+        CreateCBVHeaps();
+
         return true;
     }
     /**
@@ -178,34 +202,8 @@ class MYD3D : public D3DBasicSetUp
     }
 
     private:
-    HWND wd_;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imgui_srv_heap_;
-};
-
-class D3DApp : public BasicWindow
-{
-    public:
-    D3DApp(HINSTANCE hi, UINT wid, UINT hei, const std::string &title)
-        : BasicWindow(hi, wid, hei, title), render_(this->getHWND())
-    {
-        render_.Initialize();
-        BasicWindow::SetImguiContext(render_.GetImguiCtx());
-    }
-    void OnResize(LONG new_width, LONG new_height) override
-    {
-        render_.Resize(new_width, new_height);
-    }
-    /**
-     * @brief 每帧调用这个函数
-     *
-     */
-    void CustomHandler() override
-    {
-        render_.Draw({});
-    }
-
-    private:
-    MYD3D render_;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> cbv_heap_;
 };
 
 #endif

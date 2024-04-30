@@ -15,6 +15,7 @@ add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 project ("MaxEngine")
 set(CMAKE_SYSTEM_VERSION 10.0.22621.0)
+
 #头文件路径
 set(D3D12_LIB_HEADERS ${PROJECT_SOURCE_DIR}/D3D12/include)
 

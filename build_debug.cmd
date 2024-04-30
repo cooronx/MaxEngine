@@ -8,7 +8,8 @@ cmake ^
     -S . ^
     -B ./build ^
     -G Ninja ^
-    -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
+    -D CMAKE_EXPORT_COMPILE_COMMANDS=ON ^
+    -DCMAKE_TOOLCHAIN_FILE="D:/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 cmake --build ./build --config Debug
 

@@ -2,11 +2,12 @@
 
 project(MAX_COMMON)
 
-#windowsÏµÍ³¶¯Ì¬¿âÉú³ÉlibÎÄ¼þµÄÃüÁî
+#windowsÏµÍ³ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½libï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+find_package(Eigen3 CONFIG REQUIRED)
 add_library(${PROJECT_NAME} SHARED)
-
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
 add_subdirectory(include)
 
 get_filename_component(PARENT_FOLDER_ABSOLUTE ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)

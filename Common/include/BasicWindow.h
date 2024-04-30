@@ -9,6 +9,10 @@
 #include <winnt.h>
 #include <winuser.h>
 
+namespace MaxEngine
+{
+namespace Common
+{
 /**
  * @brief 要想正确使用Imgui的功能，要传递上下文指针，上下文无法在不同模块（dll）中共享
  *
@@ -52,5 +56,6 @@ class BasicWindow
     UINT getWidth() const;
     bool IsResizing() const;
 };
-
+} // namespace Common
+} // namespace MaxEngine
 #endif
