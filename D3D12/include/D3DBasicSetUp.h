@@ -136,8 +136,9 @@ class D3DBasicSetUp
     virtual void Draw(const GameTimer &) = 0;
 
     public:
-    D3DBasicSetUp(HWND);
+    D3DBasicSetUp();
     ~D3DBasicSetUp();
+    void SetHWND(HWND);
 };
 
 #endif
