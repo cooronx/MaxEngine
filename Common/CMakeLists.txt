@@ -1,13 +1,12 @@
-#D3D12
+﻿#D3D12
 
 project(MAX_COMMON)
 
-#windowsϵͳ��̬������lib�ļ�������
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 find_package(Eigen3 CONFIG REQUIRED)
 add_library(${PROJECT_NAME} SHARED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 add_subdirectory(include)
 
 get_filename_component(PARENT_FOLDER_ABSOLUTE ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
