@@ -32,7 +32,7 @@ template <class DataType> class UpLoadBuffer
                                                       D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
                                                       IID_PPV_ARGS(buffer_.GetAddressOf())));
         /// 将上传堆的指针映射到内存中
-        buffer_->Map(0, nullptr, reinterpret_cast<void **>(&mapped_data_));
+        ThrowIfFailed(buffer_->Map(0, nullptr, reinterpret_cast<void **>(&mapped_data_)));
     }
 
     ~UpLoadBuffer()
@@ -49,7 +49,7 @@ template <class DataType> class UpLoadBuffer
     }
     void CopyData(UINT element_start_idx, const DataType &copy_data)
     {
-        memcpy(&mapped_data_[element_start_idx * element_byte_size_], copy_data, sizeof(DataType));
+        memcpy(&mapped_data_[element_start_idx * element_byte_size_], &copy_data, sizeof(DataType));
     }
 
     private:

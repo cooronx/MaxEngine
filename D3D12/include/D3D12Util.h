@@ -5,10 +5,12 @@
 #include <WTypesbase.h>
 #include <comdef.h>
 
+#include <cstddef>
 #include <d3d12.h>
 #include <d3dcommon.h>
 #include <d3dcompiler.h>
 #include <exception>
+#include <intsafe.h>
 #include <string>
 #include <wrl.h>
 
@@ -20,7 +22,7 @@ namespace Util
     {                                                                                              \
         HRESULT hr__ = (x);                                                                        \
         std::string fn__ = __FILE__;                                                               \
-        if (hr__ < 0)                                                                              \
+        if (FAILED(hr__))                                                                          \
         {                                                                                          \
             throw DxException{#x, fn__, __LINE__, hr__};                                           \
         }                                                                                          \
@@ -137,7 +139,6 @@ class HelperFuncs
         hr = D3DCompileFromFile(filename.c_str(), defines, D3D_COMPILE_STANDARD_FILE_INCLUDE,
                                 entrypoint.c_str(), target.c_str(), compileFlags, 0, &byteCode,
                                 &errors);
-
         if (errors != nullptr)
             OutputDebugStringA((char *)errors->GetBufferPointer());
 

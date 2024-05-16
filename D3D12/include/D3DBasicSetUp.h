@@ -121,7 +121,7 @@ class D3DBasicSetUp
      * @brief 其实具体干啥我也不知道 2024.4.22
      *
      */
-    virtual void OnResize();
+    virtual void OnResize(UINT width, UINT height);
     /**
      * @brief 整体初始化
      *

@@ -1,4 +1,7 @@
-﻿#include <Windows.h>
+﻿#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <UtilType.h>
+#include <Windows.h>
 #include <minwindef.h>
 #include <winbase.h>
 #include <winuser.h>
@@ -21,6 +24,7 @@ class D3DApp : public BasicWindow
     {
         render_.SetHWND(this->getHWND());
         render_.Initialize();
+        OnResize(wid, hei);
         BasicWindow::SetImguiContext(render_.GetImguiCtx());
     }
     void OnResize(LONG new_width, LONG new_height) override
@@ -33,6 +37,7 @@ class D3DApp : public BasicWindow
      */
     void CustomHandler() override
     {
+        render_.Update();
         render_.Draw({});
     }
 
@@ -42,7 +47,17 @@ class D3DApp : public BasicWindow
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-    D3DApp app{hInstance, 800, 600, "test"};
-
-    return app.Run();
+    try
+    {
+        // AllocConsole();
+        // freopen("CONOUT$", "w", stdout);
+        // std::cout << "hello world" << "\n";
+        D3DApp app{hInstance, 800, 600, "test"};
+        return app.Run();
+    }
+    catch (DxException &e)
+    {
+        MessageBox(nullptr, e.what(), "HR Failed", MB_OK);
+        return 0;
+    }
 }
