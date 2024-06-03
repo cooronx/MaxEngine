@@ -39,8 +39,8 @@ struct TransMatrix
 };
 struct Vertex
 {
-    XMFLOAT3 Pos;
-    XMFLOAT4 Color;
+    RowVector3f Pos;
+    RowVector4f Color;
 };
 // Defines a subrange of geometry in a MeshGeometry.  This is for when multiple
 // geometries are stored in one vertex and index buffer.  It provides the offsets
@@ -157,7 +157,7 @@ class MYD3D : public D3DBasicSetUp
                             imgui_srv_heap_->GetGPUDescriptorHandleForHeapStart());
     }
     /**
-     * @brief 创建常量堆
+     * @brief 创建常量描述符堆
      *
      */
     void CreateCBVHeaps()
@@ -247,14 +247,14 @@ class MYD3D : public D3DBasicSetUp
     {
 
         std::array<Vertex, 8> vertices = {
-            Vertex({XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White)}),
-            Vertex({XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black)}),
-            Vertex({XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red)}),
-            Vertex({XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green)}),
-            Vertex({XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue)}),
-            Vertex({XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow)}),
-            Vertex({XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan)}),
-            Vertex({XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta)})};
+            Vertex({RowVector3f(-1.0f, -1.0f, -1.0f), RowVector4f(Colors::White)}),
+            Vertex({RowVector3f(-1.0f, +1.0f, -1.0f), RowVector4f(Colors::Black)}),
+            Vertex({RowVector3f(+1.0f, +1.0f, -1.0f), RowVector4f(Colors::Red)}),
+            Vertex({RowVector3f(+1.0f, -1.0f, -1.0f), RowVector4f(Colors::Green)}),
+            Vertex({RowVector3f(-1.0f, -1.0f, +1.0f), RowVector4f(Colors::Blue)}),
+            Vertex({RowVector3f(-1.0f, +1.0f, +1.0f), RowVector4f(Colors::Yellow)}),
+            Vertex({RowVector3f(+1.0f, +1.0f, +1.0f), RowVector4f(Colors::Cyan)}),
+            Vertex({RowVector3f(+1.0f, -1.0f, +1.0f), RowVector4f(Colors::Magenta)})};
 
         std::array<std::uint16_t, 36> indices = {// front face
                                                  0, 1, 2, 0, 2, 3,
@@ -352,10 +352,8 @@ class MYD3D : public D3DBasicSetUp
         Vector3f target_pos = {0, 0, 0};
         Vector3f world_up = {0, 1, 0};
         Matrix4f view_mat = GraphicsMathHelper::GetViewMatrix(eye_pos, target_pos, world_up);
-        // view_mat.transposeInPlace();
         Matrix4f mvp = view_mat * proj_mat_;
         TransMatrix trans_mat;
-        // mvp.transposeInPlace();
         trans_mat.mvp_mat = Float4x4(mvp.data());
         const_buffer_obj_->CopyData(0, trans_mat);
     }
@@ -391,13 +389,12 @@ class MYD3D : public D3DBasicSetUp
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
-        // Indicate a state transition on the resource usage.
+        // 资源转换屏障
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
             CurrentBackBuffer(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
         direct_list_->ResourceBarrier(1, &barrier);
 
-        // Set the viewport and scissor rect.  This needs to be reset whenever the
-        // command list is reset.
+        // 设置viewport和裁剪矩形，每次绘制前都需要设置
         direct_list_->RSSetViewports(1, &screen_viewport_);
         direct_list_->RSSetScissorRects(1, &scissor_rect_);
 

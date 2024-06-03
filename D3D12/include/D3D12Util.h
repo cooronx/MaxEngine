@@ -61,31 +61,27 @@ class HelperFuncs
     {
         Microsoft::WRL::ComPtr<ID3D12Resource> defaultBuffer;
 
-        // Create the actual default buffer resource.
+        // 创建默认缓冲区
         auto property = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
         auto desc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
         ThrowIfFailed(device->CreateCommittedResource(&property, D3D12_HEAP_FLAG_NONE, &desc,
                                                       D3D12_RESOURCE_STATE_COMMON, nullptr,
                                                       IID_PPV_ARGS(defaultBuffer.GetAddressOf())));
 
-        // In order to copy CPU memory data into our default buffer, we need to create
-        // an intermediate upload heap.
+        // 为了把CPU中的数据传入到GPU中这个默认堆中，我们得再创建一个上传堆来辅助。
         property = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
         desc = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
         ThrowIfFailed(device->CreateCommittedResource(&property, D3D12_HEAP_FLAG_NONE, &desc,
                                                       D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
                                                       IID_PPV_ARGS(uploadBuffer.GetAddressOf())));
 
-        // Describe the data we want to copy into the default buffer.
+        // 待修改 目前我们这里只传入了一个一位数组，所以可以这样填
         D3D12_SUBRESOURCE_DATA subResourceData = {};
         subResourceData.pData = initData;
         subResourceData.RowPitch = byteSize;
         subResourceData.SlicePitch = subResourceData.RowPitch;
 
-        // Schedule to copy the data to the default buffer resource.  At a high level, the helper
-        // function UpdateSubresources will copy the CPU memory into the intermediate upload heap.
-        // Then, using ID3D12CommandList::CopySubresourceRegion, the intermediate upload heap data
-        // will be copied to mBuffer.
+        // 使用UpdateSubresources辅助函数，这个函数中实际上发生的过程是先把资源传入到上传堆中，再把上传堆中的数据拷贝到默认堆中。
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
             defaultBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
         cmdList->ResourceBarrier(1, &barrier);
@@ -95,9 +91,8 @@ class HelperFuncs
             defaultBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
         cmdList->ResourceBarrier(1, &barrier);
 
-        // Note: uploadBuffer has to be kept alive after the above function calls because
-        // the command list has not been executed yet that performs the actual copy.
-        // The caller can Release the uploadBuffer after it knows the copy has been executed.
+        // Note :
+        // 上传堆暂时还不能释放，因为我们这里还没有执行真正的拷贝，等待cmdlist真正执行了之后才能释放。
 
         return defaultBuffer;
     }

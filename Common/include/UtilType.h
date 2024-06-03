@@ -7,7 +7,7 @@ namespace MaxEngine
 namespace Common
 {
 /**
- * @brief 从一个列主序矩阵转换普通的二维数组
+ * @brief 矩阵包装类型，方便和图形API进行数据传输
  *
  */
 class Float4x4
