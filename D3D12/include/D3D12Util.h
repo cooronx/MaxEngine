@@ -30,21 +30,21 @@ namespace Util
 #endif
 class DxException : public std::exception
 {
-    private:
+private:
     std::string function_name_;
     std::string file_name_;
     std::string full_error_msg_{};
     int line_number_;
     HRESULT error_code_;
 
-    public:
+public:
     DxException(std::string function_name, std::string filename, int line_num, HRESULT err_code);
     const char *what() const override;
 };
 
 class HelperFuncs
 {
-    public:
+public:
     /**
      * @brief 创建一个默认缓冲区，用一个上传堆来完成这件事情
      *

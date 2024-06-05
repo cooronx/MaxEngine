@@ -11,10 +11,10 @@ namespace MaxEngine
 {
 namespace Common
 {
-constexpr float MAXENGINE_PI = 3.1415926535f;
+
 class GraphicsMathHelper
 {
-    public:
+public:
     GraphicsMathHelper() = delete;
     GraphicsMathHelper(const GraphicsMathHelper &) = delete;
     GraphicsMathHelper(GraphicsMathHelper &&) = delete;

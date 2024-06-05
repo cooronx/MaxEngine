@@ -13,9 +13,7 @@
 using Microsoft::WRL::ComPtr;
 using namespace Util;
 
-D3DBasicSetUp::D3DBasicSetUp()
-{
-}
+D3DBasicSetUp::D3DBasicSetUp() {}
 
 bool D3DBasicSetUp::Initialize()
 {
@@ -26,9 +24,7 @@ bool D3DBasicSetUp::Initialize()
     return true;
 }
 
-D3DBasicSetUp::~D3DBasicSetUp()
-{
-}
+D3DBasicSetUp::~D3DBasicSetUp() {}
 
 void D3DBasicSetUp::SetHWND(HWND hd)
 {

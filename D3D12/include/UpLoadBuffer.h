@@ -15,7 +15,7 @@ using namespace Util;
 
 template <class DataType> class UpLoadBuffer
 {
-    public:
+public:
     UpLoadBuffer(ID3D12Device *device, UINT element_count, bool is_constant)
         : is_constant_(is_constant)
     {
@@ -43,16 +43,13 @@ template <class DataType> class UpLoadBuffer
         }
         mapped_data_ = nullptr;
     }
-    ID3D12Resource *Resource() const
-    {
-        return buffer_.Get();
-    }
+    ID3D12Resource *Resource() const { return buffer_.Get(); }
     void CopyData(UINT element_start_idx, const DataType &copy_data)
     {
         memcpy(&mapped_data_[element_start_idx * element_byte_size_], &copy_data, sizeof(DataType));
     }
 
-    private:
+private:
     Microsoft::WRL::ComPtr<ID3D12Resource> buffer_;
     /// 标识当前是否为常量缓冲区，因为常量缓冲区需要有特殊的对齐方式
     bool is_constant_ = false;

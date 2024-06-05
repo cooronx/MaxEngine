@@ -3,6 +3,7 @@
 
 #include <DirectXCollision.h>
 #include <DirectXColors.h>
+#include <DirectXMath.h>
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/src/Core/Matrix.h>
@@ -35,12 +36,12 @@ using namespace MaxEngine::Common;
 struct TransMatrix
 {
     /// mvp 矩阵
-    Float4x4 mvp_mat;
+    MaxFloat4x4 mvp_mat;
 };
 struct Vertex
 {
-    RowVector3f Pos;
-    RowVector4f Color;
+    MaxFloat3 Pos;
+    MaxColor4f Color;
 };
 // Defines a subrange of geometry in a MeshGeometry.  This is for when multiple
 // geometries are stored in one vertex and index buffer.  It provides the offsets
@@ -113,10 +114,8 @@ struct MeshGeometry
 
 class MYD3D : public D3DBasicSetUp
 {
-    public:
-    MYD3D() : D3DBasicSetUp()
-    {
-    }
+public:
+    MYD3D() : D3DBasicSetUp() {}
     ~MYD3D()
     {
         ImGui_ImplDX12_Shutdown();
@@ -245,16 +244,15 @@ class MYD3D : public D3DBasicSetUp
      */
     void BuildBoxGeometry()
     {
-
         std::array<Vertex, 8> vertices = {
-            Vertex({RowVector3f(-1.0f, -1.0f, -1.0f), RowVector4f(Colors::White)}),
-            Vertex({RowVector3f(-1.0f, +1.0f, -1.0f), RowVector4f(Colors::Black)}),
-            Vertex({RowVector3f(+1.0f, +1.0f, -1.0f), RowVector4f(Colors::Red)}),
-            Vertex({RowVector3f(+1.0f, -1.0f, -1.0f), RowVector4f(Colors::Green)}),
-            Vertex({RowVector3f(-1.0f, -1.0f, +1.0f), RowVector4f(Colors::Blue)}),
-            Vertex({RowVector3f(-1.0f, +1.0f, +1.0f), RowVector4f(Colors::Yellow)}),
-            Vertex({RowVector3f(+1.0f, +1.0f, +1.0f), RowVector4f(Colors::Cyan)}),
-            Vertex({RowVector3f(+1.0f, -1.0f, +1.0f), RowVector4f(Colors::Magenta)})};
+            Vertex({MaxFloat3(-1.0f, -1.0f, -1.0f), MaxColor4f(Colors::White)}),
+            Vertex({MaxFloat3(-1.0f, +1.0f, -1.0f), MaxColor4f(Colors::Black)}),
+            Vertex({MaxFloat3(+1.0f, +1.0f, -1.0f), MaxColor4f(Colors::Red)}),
+            Vertex({MaxFloat3(+1.0f, -1.0f, -1.0f), MaxColor4f(Colors::Green)}),
+            Vertex({MaxFloat3(-1.0f, -1.0f, +1.0f), MaxColor4f(Colors::Blue)}),
+            Vertex({MaxFloat3(-1.0f, +1.0f, +1.0f), MaxColor4f(Colors::Yellow)}),
+            Vertex({MaxFloat3(+1.0f, +1.0f, +1.0f), MaxColor4f(Colors::Cyan)}),
+            Vertex({MaxFloat3(+1.0f, -1.0f, +1.0f), MaxColor4f(Colors::Magenta)})};
 
         std::array<std::uint16_t, 36> indices = {// front face
                                                  0, 1, 2, 0, 2, 3,
@@ -354,7 +352,7 @@ class MYD3D : public D3DBasicSetUp
         Matrix4f view_mat = GraphicsMathHelper::GetViewMatrix(eye_pos, target_pos, world_up);
         Matrix4f mvp = view_mat * proj_mat_;
         TransMatrix trans_mat;
-        trans_mat.mvp_mat = Float4x4(mvp.data());
+        trans_mat.mvp_mat = MaxFloat4x4(mvp.data());
         const_buffer_obj_->CopyData(0, trans_mat);
     }
     /**
@@ -398,13 +396,12 @@ class MYD3D : public D3DBasicSetUp
         direct_list_->RSSetViewports(1, &screen_viewport_);
         direct_list_->RSSetScissorRects(1, &scissor_rect_);
 
-        // Clear the back buffer and depth buffer.
         direct_list_->ClearRenderTargetView(CurrentBackBufferDesc(), Colors::LightSteelBlue, 0,
                                             nullptr);
         direct_list_->ClearDepthStencilView(DepthStencilDesc(),
                                             D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f,
                                             0, 0, nullptr);
-        // Specify the buffers we are going to render to.
+        // 指定渲染到哪个buffer里面
         auto back_buffer_desc = CurrentBackBufferDesc();
         auto depth_desc = DepthStencilDesc();
         direct_list_->OMSetRenderTargets(1, &back_buffer_desc, true, &depth_desc);
@@ -428,19 +425,16 @@ class MYD3D : public D3DBasicSetUp
         ID3D12DescriptorHeap *heaps[] = {imgui_srv_heap_.Get()};
         direct_list_->SetDescriptorHeaps(_countof(heaps), heaps);
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), direct_list_.Get());
-        //  Indicate a state transition on the resource usage.
         barrier = CD3DX12_RESOURCE_BARRIER::Transition(
             CurrentBackBuffer(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
         direct_list_->ResourceBarrier(1, &barrier);
 
-        // Done recording commands.
         ThrowIfFailed(direct_list_->Close());
 
-        // Add the command list to the queue for execution.
         ID3D12CommandList *cmdsLists[] = {direct_list_.Get()};
         command_queue_->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-        // swap the back and front buffers
+        // 交换
         ThrowIfFailed(swap_chain_->Present(0, 0));
         current_back_buffer_idx_ = (current_back_buffer_idx_ + 1) % swap_chain_buffer_cnt_;
 
@@ -454,12 +448,9 @@ class MYD3D : public D3DBasicSetUp
      *
      * @return ImGuiContext* 上下文指针
      */
-    ImGuiContext *GetImguiCtx()
-    {
-        return ImGui::GetCurrentContext();
-    }
+    ImGuiContext *GetImguiCtx() { return ImGui::GetCurrentContext(); }
 
-    private:
+private:
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imgui_srv_heap_;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> cbv_heap_;
     Microsoft::WRL::ComPtr<ID3D12RootSignature> root_signature_;

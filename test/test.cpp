@@ -18,7 +18,7 @@ using namespace MaxEngine::Common;
 
 class D3DApp : public BasicWindow
 {
-    public:
+public:
     D3DApp(HINSTANCE hi, UINT wid, UINT hei, const std::string &title)
         : BasicWindow(hi, wid, hei, title)
     {
@@ -41,7 +41,7 @@ class D3DApp : public BasicWindow
         render_.Draw({});
     }
 
-    private:
+private:
     MYD3D render_;
 };
 

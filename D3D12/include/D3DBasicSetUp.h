@@ -18,7 +18,7 @@
 
 class D3DBasicSetUp
 {
-    protected:
+protected:
     /// 工厂对象
     Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi_factory_;
     /// 交换链对象
@@ -73,7 +73,7 @@ class D3DBasicSetUp
     /// 裁剪矩形
     D3D12_RECT scissor_rect_;
 
-    protected:
+protected:
     /**
      * @brief 当前显示的缓冲区
      *
@@ -135,7 +135,7 @@ class D3DBasicSetUp
      */
     virtual void Draw(const GameTimer &) = 0;
 
-    public:
+public:
     D3DBasicSetUp();
     ~D3DBasicSetUp();
     void SetHWND(HWND);
