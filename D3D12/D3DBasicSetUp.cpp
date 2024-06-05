@@ -13,9 +13,7 @@
 using Microsoft::WRL::ComPtr;
 using namespace Util;
 
-D3DBasicSetUp::D3DBasicSetUp()
-{
-}
+D3DBasicSetUp::D3DBasicSetUp() {}
 
 bool D3DBasicSetUp::Initialize()
 {
@@ -23,13 +21,10 @@ bool D3DBasicSetUp::Initialize()
         return false;
     if (!InitializeD3D())
         return false;
-    OnResize();
     return true;
 }
 
-D3DBasicSetUp::~D3DBasicSetUp()
-{
-}
+D3DBasicSetUp::~D3DBasicSetUp() {}
 
 void D3DBasicSetUp::SetHWND(HWND hd)
 {
@@ -129,10 +124,12 @@ void D3DBasicSetUp::FlushCommandQueue()
     }
 }
 
-void D3DBasicSetUp::OnResize()
+void D3DBasicSetUp::OnResize(UINT width, UINT height)
 {
-    // Flush before changing any resources.
+    // 先等待GPU把之前的命令执行完
     FlushCommandQueue();
+    client_width_ = width;
+    client_height_ = height;
 
     ThrowIfFailed(direct_list_->Reset(direct_allocator_.Get(), nullptr));
 
@@ -218,7 +215,7 @@ void D3DBasicSetUp::OnResize()
     screen_viewport_.MinDepth = 0.0f;
     screen_viewport_.MaxDepth = 1.0f;
 
-    scissor_rect_ = {0, 0, static_cast<LONG>(client_height_), static_cast<LONG>(client_width_)};
+    scissor_rect_ = {0, 0, static_cast<LONG>(client_width_), static_cast<LONG>(client_height_)};
 }
 
 bool D3DBasicSetUp::InitializeD3D()

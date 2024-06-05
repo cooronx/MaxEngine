@@ -1,3 +1,4 @@
+// clang-format off
 //*********************************************************
 //
 // Copyright (c) Microsoft. All rights reserved.

@@ -38,6 +38,18 @@ LRESULT CALLBACK BasicWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LP
             {
                 window->OnResize(window->getWidth(), window->getHeight());
             }
+            if (wParam == SIZE_RESTORED)
+            {
+                if (window->IsFirstShow() == true)
+                {
+                    window->isFirstShow = false;
+                    /// do nothing
+                }
+                else
+                {
+                    window->OnResize(window->getWidth(), window->getHeight());
+                }
+            }
             return 0;
         case WM_ENTERSIZEMOVE:
             window->setIsResizing(true);
@@ -147,6 +159,11 @@ HWND BasicWindow::getHWND() const
 {
     return window_handle_;
 }
+/**
+ * @brief 获取窗口长宽(只计算用户区，也就是没有计算标题栏和菜单栏等大小A)
+ *
+ * @return UINT
+ */
 UINT BasicWindow::getHeight() const
 {
     return window_height_;
@@ -158,4 +175,8 @@ UINT BasicWindow::getWidth() const
 bool BasicWindow::IsResizing() const
 {
     return isResizing;
+}
+bool BasicWindow::IsFirstShow() const
+{
+    return isFirstShow;
 }
