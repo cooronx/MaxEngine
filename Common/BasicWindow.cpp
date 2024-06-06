@@ -36,6 +36,12 @@ LRESULT CALLBACK BasicWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LP
             }
             if (wParam == SIZE_MAXIMIZED)
             {
+                window->isMaximized = true;
+                window->OnResize(window->getWidth(), window->getHeight());
+            }
+            if (wParam == SIZE_MINIMIZED)
+            {
+                window->isMinimized = true;
                 window->OnResize(window->getWidth(), window->getHeight());
             }
             if (wParam == SIZE_RESTORED)
@@ -47,6 +53,8 @@ LRESULT CALLBACK BasicWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LP
                 }
                 else
                 {
+                    window->isMaximized = false;
+                    window->isMinimized = false;
                     window->OnResize(window->getWidth(), window->getHeight());
                 }
             }
@@ -159,11 +167,6 @@ HWND BasicWindow::getHWND() const
 {
     return window_handle_;
 }
-/**
- * @brief 获取窗口长宽(只计算用户区，也就是没有计算标题栏和菜单栏等大小A)
- *
- * @return UINT
- */
 UINT BasicWindow::getHeight() const
 {
     return window_height_;
@@ -179,4 +182,13 @@ bool BasicWindow::IsResizing() const
 bool BasicWindow::IsFirstShow() const
 {
     return isFirstShow;
+}
+
+bool BasicWindow::IsMaximized() const
+{
+    return isMaximized;
+}
+bool BasicWindow::IsMinimized() const
+{
+    return isMinimized;
 }
