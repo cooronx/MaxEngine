@@ -8,6 +8,7 @@ find_package(Eigen3 CONFIG REQUIRED)
 add_library(${PROJECT_NAME} SHARED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 add_subdirectory(include)
+add_subdirectory(src)
 
 get_filename_component(PARENT_FOLDER_ABSOLUTE ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 include_directories(
@@ -25,8 +26,6 @@ ${PARENT_FOLDER_ABSOLUTE}/imgui/backends/imgui_impl_win32.*
 ${PARENT_FOLDER_ABSOLUTE}/imgui/backends/imgui_impl_dx12.*
 )
 
-
-file(GLOB_RECURSE SOURCES "*.cpp")
 
 target_sources( ${PROJECT_NAME}
 	PRIVATE
