@@ -226,12 +226,10 @@ public:
      */
     void CompileShaderAndBuildInputLayout()
     {
-        vs_bytecode_ = Util::HelperFuncs::CompileShader(
-            L"D:\\studyProjects\\MaxEngine\\build\\test\\Shaders\\color.hlsl", nullptr, "VS",
-            "vs_5_0");
-        ps_bytecode_ = Util::HelperFuncs::CompileShader(
-            L"D:\\studyProjects\\MaxEngine\\build\\test\\Shaders\\color.hlsl", nullptr, "PS",
-            "ps_5_0");
+        vs_bytecode_ =
+            Util::HelperFuncs::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
+        ps_bytecode_ =
+            Util::HelperFuncs::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
 
         input_layout_ = {{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
                           D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},

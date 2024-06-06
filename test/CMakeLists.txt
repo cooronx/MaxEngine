@@ -26,6 +26,10 @@ add_executable (test "test.cpp" "MyD3D.h" ${SP_IMGUI_SRC} ${COMMON_IMGUI_SRC})
 
 target_link_libraries(test MAX_COMMON MyD3D12)
 
+get_filename_component(PARENT_FOLDER_ABSOLUTE ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Shaders
+DESTINATION ${PARENT_FOLDER_ABSOLUTE}/build/test)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET test PROPERTY CXX_STANDARD 20)
