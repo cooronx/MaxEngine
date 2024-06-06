@@ -29,7 +29,16 @@ public:
     }
     void OnResize(LONG new_width, LONG new_height) override
     {
-        render_.Resize(new_width, new_height);
+        try
+        {
+            if (!IsMinimized())
+                render_.Resize(new_width, new_height);
+        }
+        catch (DxException &e)
+        {
+            MessageBox(nullptr, e.what(), "HR Failed", MB_OK);
+            return;
+        }
     }
     /**
      * @brief 每帧调用这个函数

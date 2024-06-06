@@ -33,6 +33,10 @@ private:
     bool isResizing = false;
     /// 判断是否窗口是第一次显示（因为第一次显示的时候子类还没有被创建）
     bool isFirstShow = true;
+    /// 窗口是否最大化
+    bool isMaximized = false;
+    /// 窗口是否最小化
+    bool isMinimized = false;
 
 private:
     bool InitWindow();
@@ -58,6 +62,8 @@ public:
     UINT getWidth() const;
     bool IsResizing() const;
     bool IsFirstShow() const;
+    bool IsMaximized() const;
+    bool IsMinimized() const;
 };
 } // namespace Common
 } // namespace MaxEngine

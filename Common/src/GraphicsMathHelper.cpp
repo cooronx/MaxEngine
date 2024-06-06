@@ -2,7 +2,7 @@
 
 using namespace MaxEngine::Common;
 
-constexpr float MAXENGINE_PI = 3.1415926535f;
+constexpr double MAXENGINE_PI = 3.1415926535;
 Matrix4f GraphicsMathHelper::GetProjectionMatrix(float fov_y, float ratio, float n, float f)
 {
     Matrix4f res{};
